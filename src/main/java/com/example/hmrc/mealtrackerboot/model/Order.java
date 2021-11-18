@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +29,6 @@ public class Order {
 
     @OneToMany(mappedBy = "order")
     private List<Meal> meals = new ArrayList<>();
-
 
     private Order() {}
 
