@@ -1,4 +1,4 @@
-package com.example.hmrc.mealtrackerboot.archive;
+package archive;
 
 import com.example.hmrc.mealtrackerboot.model.Order;
 

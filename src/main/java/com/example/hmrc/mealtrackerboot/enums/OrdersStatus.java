@@ -5,5 +5,6 @@ public enum OrdersStatus {
     PREPARING,
     COOKING,
     PLATING,
+    COMPLETED,
     READY;
 }

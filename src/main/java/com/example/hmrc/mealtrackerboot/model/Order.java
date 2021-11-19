@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,10 +25,13 @@ public class Order {
     @Enumerated(value = EnumType.STRING)
     private OrdersStatus status;
 
-    @OneToMany(mappedBy = "order")
-    private List<Meal> meals = new ArrayList<>();
+    @ElementCollection
+    private List<String> meals = new ArrayList<>();
 
-    private Order() {}
+    private Order() {
+        this.dateAndTime = LocalDateTime.now();
+        this.status = OrdersStatus.NOT_STARTED;
+    }
 
     public Order(int tableNumber) {
         this.tableNumber = tableNumber;
@@ -70,11 +71,11 @@ public class Order {
         this.status = status;
     }
 
-    public List<Meal> getMeals() {
+    public List<String> getMeals() {
         return meals;
     }
 
-    public void setMeals(List<Meal> meals) {
+    public void setMeals(List<String> meals) {
         this.meals = meals;
     }
 

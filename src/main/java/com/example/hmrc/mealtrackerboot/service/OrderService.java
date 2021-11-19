@@ -8,14 +8,15 @@ import com.example.hmrc.mealtrackerboot.validation.OrderValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Component
-//@Transactional
+@Transactional
 public class OrderService {
 
     private OrderRepo repo;
@@ -29,29 +30,45 @@ public class OrderService {
 
     public Order addNewOrder(Order order) {
         if(validator.isValid(order)) {
+//            order.setStatus(OrdersStatus.NOT_STARTED);
+//            order.setDateAndTime(LocalDateTime.now());
             return repo.save(order);
         }else {
             throw new BusinessNegotiationException("Sorry!! no more tables available!");
         }
     }
 
-
     public void updateOrder(Order order) {
         Objects.requireNonNull(order.getId());
-        repo.save(order);
-    }
+        if(validator.isValid(order)) {
+            repo.save(order);
+        }else {
+            throw new BusinessNegotiationException("Sorry!! order not updated!");
+        }
 
+    }
 
     public Page<Order> findAll(Pageable pageable) {
         Page<Order> pages = repo.findAll(pageable);
         return pages;
     }
 
-
     public Optional<Order> findById(Long id) {
-
-        return repo.findById(id);
+        Optional<Order> order = repo.findById(id);
+        if(order.isPresent()){
+            return order;
+        }else{
+            return Optional.empty();
+        }
     }
 
+    public List<Order> findByStatus(OrdersStatus status){
+        return repo.findByStatus(status);
+    }
+
+    public void deleteOrder(Order id) {
+
+        repo.delete(id);
+    }
 
 }
