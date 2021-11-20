@@ -11,6 +11,7 @@ import java.util.List;
 public interface OrderRepo extends JpaRepository<Order, Long> {
 
     List<Order> findByStatus(OrdersStatus status);
+    List<Order> findByStatusNot(OrdersStatus status);
 
 
 }

@@ -67,8 +67,12 @@ public class OrderService {
     }
 
     public void deleteOrder(Order id) {
-
         repo.delete(id);
     }
+
+    public List<Order> findAllCurrent() {
+        return repo.findByStatusNot(OrdersStatus.COMPLETED);
+    }
+
 
 }
