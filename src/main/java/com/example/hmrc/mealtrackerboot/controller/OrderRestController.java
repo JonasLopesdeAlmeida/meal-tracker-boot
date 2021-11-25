@@ -4,6 +4,7 @@ package com.example.hmrc.mealtrackerboot.controller;
 import com.example.hmrc.mealtrackerboot.enums.OrdersStatus;
 import com.example.hmrc.mealtrackerboot.model.Order;
 import com.example.hmrc.mealtrackerboot.service.OrderService;
+import com.example.hmrc.mealtrackerboot.service.port.OrderServicePort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,22 +21,22 @@ import java.util.Optional;
 @RequestMapping(value = "/api/orders/v1")
 public class OrderRestController {
 
-    private final OrderService service;
+    private final OrderServicePort service;
 
-    public OrderRestController(OrderService service) {
+    public OrderRestController(OrderServicePort service) {
         this.service = service;
     }
 
 
     @GetMapping
-    public ResponseEntity<Page<Order>> indAllOrders(
+    public ResponseEntity<Page<Order>> findAllOrders(
             @PageableDefault(page=0, size = 5, sort = "id",direction = Sort.Direction.DESC)Pageable pageable){
-        return new ResponseEntity<>(service.findAll(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(service.findAllOrders(pageable), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Order> findOrderById( @PathVariable("id") Long id){
-        Optional<Order> order = service.findById(id);
+        Optional<Order> order = service.findOneOrderById(id);
         return ResponseEntity.status(HttpStatus.OK).body(order.get());
     }
 
@@ -59,7 +60,7 @@ public class OrderRestController {
 
     @GetMapping(value = "/status/")
     public ResponseEntity<List<Order>> findAllOrdersByStatus(@RequestParam(value = "statusName",defaultValue = "") String statusName, OrdersStatus status){
-        return new ResponseEntity<>(service.findByStatus(status), HttpStatus.OK);
+        return new ResponseEntity<>(service.findOrderByStatus(status), HttpStatus.OK);
     }
 
 

@@ -43,14 +43,14 @@ public class OrderServiceUnitTest {
         var order = startOrder();
         order.setId(id);
         when(mockRepo.findById(id)).thenReturn(Optional.of(order));
-        Optional<Order> result = service.findById(1l);
+        Optional<Order> result = service.findOneOrderById(1l);
         assertTrue(result.isPresent());
     }
 
     public Order startOrder() {
-        var order1 = new Order(1);
-        order1.getMeals().addAll(Arrays.asList("pasta","orange juice"));
-        return mockRepo.save(order1);
+            var order = new Order(1);
+//        order.getMeals().addAll(Arrays.asList("pasta","orange juice"));
+        return order;
     }
 
 

@@ -4,6 +4,7 @@ import com.example.hmrc.mealtrackerboot.enums.OrdersStatus;
 import com.example.hmrc.mealtrackerboot.excption.BusinessNegotiationException;
 import com.example.hmrc.mealtrackerboot.model.Order;
 import com.example.hmrc.mealtrackerboot.repository.OrderRepo;
+import com.example.hmrc.mealtrackerboot.service.port.OrderServicePort;
 import com.example.hmrc.mealtrackerboot.validation.OrderValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 @Component
 @Transactional
-public class OrderService {
+public class OrderService implements OrderServicePort {
 
     private OrderRepo repo;
     private OrderValidator validator;
@@ -48,12 +49,12 @@ public class OrderService {
 
     }
 
-    public Page<Order> findAll(Pageable pageable) {
+    public Page<Order> findAllOrders(Pageable pageable) {
         Page<Order> pages = repo.findAll(pageable);
         return pages;
     }
 
-    public Optional<Order> findById(Long id) {
+    public Optional<Order> findOneOrderById(Long id) {
         Optional<Order> order = repo.findById(id);
         if(order.isPresent()){
             return order;
@@ -62,7 +63,7 @@ public class OrderService {
         }
     }
 
-    public List<Order> findByStatus(OrdersStatus status){
+    public List<Order> findOrderByStatus(OrdersStatus status){
         return repo.findByStatus(status);
     }
 
@@ -70,7 +71,7 @@ public class OrderService {
         repo.delete(id);
     }
 
-    public List<Order> findAllCurrent() {
+    public List<Order> findAllCurrentOrder() {
         return repo.findByStatusNot(OrdersStatus.COMPLETED);
     }
 

@@ -7,6 +7,7 @@ import com.example.hmrc.mealtrackerboot.model.Order;
 import com.example.hmrc.mealtrackerboot.model.User;
 import com.example.hmrc.mealtrackerboot.service.OrderService;
 import com.example.hmrc.mealtrackerboot.service.UserService;
+import com.example.hmrc.mealtrackerboot.service.port.UserServicePort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,34 +24,34 @@ import java.util.Optional;
 @RequestMapping(value = "/api/users/v1")
 public class UserRestController {
 
-    private final UserService service;
+    private final UserServicePort service;
 
-    public UserRestController(UserService service) {
+    public UserRestController(UserServicePort service) {
         this.service = service;
     }
 
 
     @GetMapping
-    public ResponseEntity<Page<User>> findAllUsers(
+    public ResponseEntity<Page<User>> getAllUsers(
             @PageableDefault(page=0, size = 5, sort = "id",direction = Sort.Direction.DESC)Pageable pageable){
-        return new ResponseEntity<>(service.findAll(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(service.findAllUsers(pageable), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<User> findUserById( @PathVariable("id") Long id){
-        Optional<User> user = service.findById(id);
+    public ResponseEntity<User> getUserById( @PathVariable("id") Long id){
+        Optional<User> user = service.findOneUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user.get());
     }
 
     @PostMapping
     public ResponseEntity<User> saveNewUser(@RequestBody User user){
-        return new ResponseEntity<>(service.addNewOrder(user), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.addNewUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<?> updateUserById(@RequestBody User user , @PathVariable("id") Long id){
         user.setId(id);
-        service.updateOrder(user);
+        service.updateUser(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -62,7 +63,7 @@ public class UserRestController {
 
     @GetMapping(value = "/role/")
     public ResponseEntity<List<User>> findAllUsersByRole(@RequestParam(value = "roleName",defaultValue = "") String roleName, UserRole role){
-        return new ResponseEntity<>(service.findUserByRole(role), HttpStatus.OK);
+        return new ResponseEntity<>(service.findUsersByRole(role), HttpStatus.OK);
     }
 
 
